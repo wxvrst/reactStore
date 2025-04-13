@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 interface ProductCardProps {
     product: {
       id: number;
@@ -12,20 +14,22 @@ interface ProductCardProps {
   }
   
   function Product({ product }: ProductCardProps) {
+    const navigate = useNavigate();
     return (
       <li
         className="flex flex-col relative rounded-2xl p-2 text-left cursor-pointer group hover:bg-neutral-700"
         key={product.id}
       >
         <img
-          className="h-72 w-full rounded-xl"
+          className="h-full max-h-84 max-w-96 rounded-xl"
           src={product.image}
           alt="image"
         />
         <button
-          className="invisible group-hover:visible absolute top-62 w-[90%] place-self-center rounded-lg
+          className="invisible group-hover:visible absolute top-76 w-[90%] place-self-center rounded-lg
           border-transparent border-1 transition-colors duration-250 hover:border-blue-500 bg-neutral-800
           py-1 px-4 my-1 cursor-pointer"
+          onClick={() => navigate(`/card-info/${product.id}`)}
         >
           More info
         </button>
