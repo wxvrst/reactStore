@@ -19,6 +19,7 @@ interface ProductCardProps {
       <li
         className="flex flex-col relative rounded-2xl p-2 text-left cursor-pointer group hover:bg-neutral-700"
         key={product.id}
+        onClick={() => navigate(`/card-info/${product.id}`)}
       >
         <img
           className="h-full max-h-84 max-w-96 rounded-xl"

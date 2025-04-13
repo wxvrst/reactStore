@@ -3,7 +3,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import AppRoutes from "./routes/routes";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 
 const darkTheme = createTheme({
 	palette: {
@@ -19,14 +19,14 @@ const darkTheme = createTheme({
 
 function App() {
 
-	const location = useLocation();
+	// const location = useLocation();
 
-	const getSelectedKey = () => {
-		switch (location.pathname) {
-			case "/": return ["1"];
-			default: return [""];
-		}
-	}
+	// const getSelectedKey = () => {
+	// 	switch (location.pathname) {
+	// 		case "/": return ["1"];
+	// 		default: return [""];
+	// 	}
+	// }
 
 	return (
 		<ThemeProvider theme={darkTheme}>
