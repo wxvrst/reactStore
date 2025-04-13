@@ -10,7 +10,7 @@ import BasketPage from "../pages/BasketPage";
 
 function AppRoutes() {
     const navigationRoutes = [
-        { path: "/", element: <MainPage /> },
+        { path: "/reactStore", element: <MainPage /> },
         { path: "/basket", element: <BasketPage /> },
         { path: "/settings", element: <PrivateRoute><SettingsPage /></PrivateRoute> },
         { path: "/login", element: <Login /> },

@@ -26,7 +26,7 @@ function Header() {
                     <Link
                         underline="none"
                         color="inherit"
-                        onClick={() => navigate('/')}
+                        onClick={() => navigate('/reactStore')}
                     >
                         Main
                     </Link>
@@ -57,7 +57,7 @@ function Header() {
                 >
                     <MenuItem onClick={() => navigate('/my-profile')}>My Profile</MenuItem>
                     <MenuItem onClick={() => navigate('/settings')}>Settings</MenuItem>
-                    <MenuItem onClick={() => navigate('/')}>Logout</MenuItem>
+                    <MenuItem onClick={() => navigate('/reactStore')}>Logout</MenuItem>
                 </Menu>
             </div>
         </header>
