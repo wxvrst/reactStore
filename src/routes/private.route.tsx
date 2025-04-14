@@ -7,6 +7,6 @@ interface IProps {
 
 const PrivateRoute: FC<IProps> =({ children }) => {
     const isAuth = false;
-    return isAuth ? children : <Navigate to="/login" />;
+    return isAuth ? children : <Navigate to="/signIn" />;
 };
 export default PrivateRoute;
