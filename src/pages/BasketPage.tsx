@@ -31,13 +31,13 @@ function BasketPage() {
                 >
                     Basket
                 </h1>
-                {basketItems.length === 0 && 
-                <h2
-                className="text-2xl text-center"    
-                >
-                    Basket is empty
+                {basketItems.length === 0 &&
+                    <h2
+                        className="text-2xl text-center"
+                    >
+                        Basket is empty
                     </h2>
-                    }
+                }
                 {basketItems.length > 0 && (
                     <Button
                         variant="outlined"
@@ -127,7 +127,6 @@ function BasketPage() {
                                         {product.price * quantity} $
                                     </span>
                                 </div>
-
                             </li>
                         );
                     })}
