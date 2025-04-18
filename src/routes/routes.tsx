@@ -11,7 +11,7 @@ import FavouritePage from "../pages/FavouritePage";
 
 function AppRoutes() {
     const navigationRoutes = [
-        { path: "/reactStore/main", element: <MainPage /> },
+        { path: "/reactStore", element: <MainPage /> },
         { path: "/reactStore/basket", element: <BasketPage /> },
         { path: "/reactStore/favourite", element: <FavouritePage /> },
         { path: "/reactStore/settings", element: <PrivateRoute><SettingsPage /></PrivateRoute> },

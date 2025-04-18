@@ -64,7 +64,7 @@ function Header() {
                     <Link
                         underline="none"
                         color="inherit"
-                        onClick={() => navigate('/reactStore/main')}
+                        onClick={() => navigate('/reactStore')}
                     >
                         Main
                     </Link>
