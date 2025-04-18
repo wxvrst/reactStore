@@ -32,7 +32,7 @@ function App() {
 		<ThemeProvider theme={darkTheme}>
 			<CssBaseline />
 			<div
-				className="w-[100vw]"
+				className="w-[100dvw] h-full bg-neutral-950"
 			>
 				<Header />
 				<AppRoutes />

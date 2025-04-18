@@ -1,110 +1,78 @@
-import { useNavigate, useParams } from "react-router-dom";
-import axios, { AxiosError } from 'axios';
-import { apiUrl, Product } from '../pages/MainPage';
+// Common hooks
 import { useEffect, useState } from "react";
+// Router hooks
+import { useNavigate, useParams } from "react-router-dom";
+// Redux
+import { useSelector } from "react-redux";// Hook
+import { RootState } from "../store/store";// Type from store
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../store/store';
+import { addToBasket } from '../store/basketSlice';
+import Button from "@mui/material/Button";
 
-function CardInfo() {
-    const params = useParams();
-    const productID = params.productID;
+const CardInfo: React.FC = () => {
+    // Navigatore initializing 
     const navigate = useNavigate();
-    const [product, setProduct] = useState<Product | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
+    // Get productID from url (/card-info/:productID)
+    const { productID } = useParams<{ productID: string }>();
+    // Get data from redux store
+    const { data, loading, error } = useSelector((state: RootState) => state.products);
+    // Variables- local states
+    const [product, setProduct] = useState<typeof data[0] | null>(null);
+    const [localError, setLocalError] = useState<string | null>(null);
+    // Searching for product by id
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get<Product[]>(apiUrl);
-                const currentProduct = productID && response.data.find((item) => item.id === parseInt(productID, 10));
-                if (currentProduct) {
-                    setProduct(currentProduct);
-                } else {
-                    setError("Продукт не найден");
-                }
-            } catch (error) {
-                if (error instanceof AxiosError) {
-                    setError(error.message);
-                } else if (error instanceof Error) {
-                    setError(error.message);
-                } else {
-                    setError("Неизвестная ошибка");
-                }
-            } finally {
-                setLoading(false);
+        if (productID) {
+            const found = data.find(p => p.id === parseInt(productID, 10));
+            if (found) {
+                setProduct(found);
+                setLocalError(null);
+            } else {
+                setLocalError("Product is not found");
             }
-        };
-
-        fetchData();
-    }, [productID]);
+        } else {
+            setLocalError("Product ID not specified");
+        }
+    }, [data, loading, productID]);
+    // Loading and errors renders
     if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    if (error) return <div>Ошибка: {error}</div>;
+    if (localError) return <div>{localError}</div>;
+    if (!product) return null;
+    // Add to basket
+    const dispatch = useDispatch<AppDispatch>();
+    // Component render
     return (
-        <>
-            <div
-                className="flex sm:flex-row p-6 gap-4 flex-col"
-            >
-                <img
-                    className="h-64 w-56 rounded-xl "
-                    src={product?.image}
-                    alt="image"
-                />
-
-                <div className="flex flex-col mt-1 gap-2">
-
-                    <span
-                        className="text-2xl mb-2"
+        <div className="flex sm:flex-row p-6 gap-4 flex-col bg-neutral-900 m-4 rounded-lg">
+            <img className="h-64 w-56 rounded-xl" src={product.image} alt={product.title} />
+            <div className="flex flex-col mt-1 gap-2">
+                <span className="text-2xl mb-2">{product.title}</span>
+                <span className="text-lg">{product.description}</span>
+                <span className="text-orange-500 font-bold">{product.price} $</span>
+                <span>
+                    <span className="text-green-500">{product.rating.count}</span>-items left
+                </span>
+                <span>
+                    <span className="text-amber-300">★</span>
+                    {product.rating.rate}
+                </span>
+                <div className="flex gap-4">
+                    <Button
+                        variant="outlined"
+                        onClick={() => navigate(-1)}
                     >
-                        {product?.title}
-                    </span>
-                    <span
-                        className="text-lg"
+                        Back
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={() => dispatch(addToBasket(product.id))}
                     >
-                        {product?.description}
-                    </span>
-                    <span
-                        className="text-orange-500 font-bold"
-                    >
-                        {product?.price} $
-                    </span>
-                    <span>
-                        <span
-                            className="text-green-500"
-                        >
-                            {product?.rating.count}
-                        </span>-items left
-                    </span>
-                    <span>
-                        <span
-                            className="text-amber-300"
-                        >
-                            ★
-                        </span>
-                        {product?.rating.rate}
-                    </span>
-                    <div
-                    className="flex gap-4"
-                    >
-                        <button
-                            className="w-28 rounded-lg border-transparent border-1 transition-colors duration-250
-                         hover:border-blue-500 bg-neutral-800 py-2 cursor-pointer"
-                            onClick={() => navigate(-1)}
-                        >
-                            Back
-                        </button>
-                        <button
-                            className="w-28 rounded-lg border-transparent border-1 transition-colors duration-250
-                         hover:border-blue-500 bg-neutral-800 py-2 cursor-pointer"
-                            onClick={() => navigate(-1)}
-                        >
-                            Add to basket
-                        </button>
-                    </div>
-
-
+                        Add to basket
+                    </Button>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
+
 export default CardInfo;

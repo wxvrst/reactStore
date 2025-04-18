@@ -43,8 +43,9 @@ function Header() {
     const handleSwitchForm = () => {
         setIsLogin(!isLogin);
     };
-
+    
     const handleCloseAlert = (
+        // @ts-ignore
         event: React.SyntheticEvent | Event,
         reason?: SnackbarCloseReason,
     ) => {
@@ -63,20 +64,28 @@ function Header() {
                     <Link
                         underline="none"
                         color="inherit"
-                        onClick={() => navigate('/reactStore')}
+                        onClick={() => navigate('/reactStore/main')}
                     >
                         Main
                     </Link>
                     <Link
                         underline="none"
                         color="inherit"
-                        onClick={() => navigate('/basket')}
+                        onClick={() => navigate('/reactStore/basket')}
                     >
                         Bakset
+                    </Link>
+                    <Link
+                        underline="none"
+                        color="inherit"
+                        onClick={() => navigate('/reactStore/favourite')}
+                    >
+                        Favourite
                     </Link>
                 </Breadcrumbs>
             </div>
             <div>
+                
                 <Button
                     id="basic-button"
                     aria-controls={open ? 'basic-menu' : undefined}
@@ -92,8 +101,8 @@ function Header() {
                     open={open}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={() => navigate('/my-profile')}>My Profile</MenuItem>
-                    <MenuItem onClick={() => navigate('/settings')}>Settings</MenuItem>
+                    <MenuItem onClick={() => navigate('/reactStore/my-profile')}>My Profile</MenuItem>
+                    <MenuItem onClick={() => navigate('/reactStore/settings')}>Settings</MenuItem>
                     <MenuItem
                         onClick={handleOpenModal}
                         className="p-4 place-content-center"
