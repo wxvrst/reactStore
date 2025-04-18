@@ -43,7 +43,7 @@ function Header() {
     const handleSwitchForm = () => {
         setIsLogin(!isLogin);
     };
-    
+
     const handleCloseAlert = (
         // @ts-ignore
         event: React.SyntheticEvent | Event,
@@ -85,7 +85,7 @@ function Header() {
                 </Breadcrumbs>
             </div>
             <div>
-                
+
                 <Button
                     id="basic-button"
                     aria-controls={open ? 'basic-menu' : undefined}
@@ -101,8 +101,16 @@ function Header() {
                     open={open}
                     onClose={handleClose}
                 >
-                    <MenuItem onClick={() => navigate('/reactStore/my-profile')}>My Profile</MenuItem>
-                    <MenuItem onClick={() => navigate('/reactStore/settings')}>Settings</MenuItem>
+                    <MenuItem
+                        onClick={() => navigate('/reactStore/my-profile')}
+                    >
+                        My Profile
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => navigate('/reactStore/settings')}
+                    >
+                        Settings
+                    </MenuItem>
                     <MenuItem
                         onClick={handleOpenModal}
                         className="p-4 place-content-center"
