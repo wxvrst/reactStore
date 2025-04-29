@@ -12,20 +12,17 @@ const favouriteSlice = createSlice({
   name: 'favourite',
   initialState,
   reducers: {
-    addToFavourite(state, action: PayloadAction<number>) {
-      if (!state.items.includes(action.payload)) {
+    toggleFavourite(state, action: PayloadAction<number>) {
+      const index = state.items.indexOf(action.payload);
+      if (index === -1) {
         state.items.push(action.payload);
+      } else {
+        state.items.splice(index, 1);
       }
     },
-    removeFromFavourite(state, action: PayloadAction<number>) {
-      state.items = state.items.filter(id => id !== action.payload);
-    },
-    clearFavourite(state) {
-      state.items = [];
-    },
-  },
+  }
 });
 // Actions export
-export const { addToFavourite, removeFromFavourite, clearFavourite } = favouriteSlice.actions;
+export const { toggleFavourite } = favouriteSlice.actions;
 // Reducer export
 export default favouriteSlice.reducer;

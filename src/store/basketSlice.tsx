@@ -1,10 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
 interface BasketItem {
     productId: number,
     quantity: number,
 }
-
 interface BasketState {
     items: BasketItem[];
 }

@@ -1,23 +1,13 @@
 import Header from "./components/Header";
 import { ThemeProvider } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import AppRoutes from "./routes/routes";
-// import { useLocation } from "react-router-dom";
+import './App.css'
+import React from "react";
 
-const darkTheme = createTheme({
-	palette: {
-		mode: 'dark',
-		primary: {
-			main: '#2196f3',
-		},
-		secondary: {
-			main: '#ff4081',
-		},
-	},
-});
-
-function App() {
+//TODO: Change theme button, hover on header links and other links
+const App: React.FC = () => {
 
 	// const location = useLocation();
 
@@ -27,14 +17,33 @@ function App() {
 	// 		default: return [""];
 	// 	}
 	// }
+	const [primaryColor, setPrimaryColor] = React.useState('#93C572');
+
+	const toggleColor = () => {
+		setPrimaryColor(prev =>
+			prev === '#93C572' ? '#E3256b' : '#93C572'
+		);
+	};
+	const isPrimaryColorAlt = primaryColor === '#E3256b';
+	
+	const activeTheme = createTheme({
+		cssVariables: true,
+		palette: {
+			mode: 'dark',
+			primary: {
+				main: primaryColor,
+			}
+		},
+	});
 
 	return (
-		<ThemeProvider theme={darkTheme}>
+		<ThemeProvider theme={activeTheme}>
 			<CssBaseline />
-			<div
-				className="w-[100dvw] h-full bg-neutral-950"
-			>
-				<Header />
+			<div>
+				<Header
+					toggleColor={toggleColor}
+					isPrimaryColorAlt={isPrimaryColorAlt}
+				/>
 				<AppRoutes />
 			</div>
 
@@ -43,5 +52,3 @@ function App() {
 }
 
 export default App;
-
-

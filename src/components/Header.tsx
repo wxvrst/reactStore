@@ -9,13 +9,21 @@ import Modal from '@mui/material/Modal';
 import SignIn from './SignIn';
 import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 
-function Header() {
+interface HeaderProps {
+    toggleColor: () => void,
+    isPrimaryColorAlt: boolean,
+}
+
+const Header: React.FC<HeaderProps> = ({ toggleColor, isPrimaryColorAlt }) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [openModal, setOpenModal] = React.useState(false);
     const [isLogin, setIsLogin] = React.useState<boolean>(true);
     const [openAlert, setOpenAlert] = React.useState(false);
     const open = Boolean(anchorEl);
+
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
     };
@@ -54,38 +62,67 @@ function Header() {
         }
         setOpenAlert(false);
     };
+    //Checking current path
+    const isActive = (path: string): boolean => location.pathname === path;
     return (
-        <header className="bg-neutral-900 p-4 flex items-center gap-3 w-full rounded-b-sm border-b-1 border-netural-400 justify-between">
+        <header className="bg-neutral-900 p-4 flex items-center gap-3 w-full rounded-b-sm border-b-1 border-neutral-800 justify-between">
             <div role="presentation">
                 <Breadcrumbs
                     aria-label="breadcrumb"
                     className="cursor-pointer"
                 >
                     <Link
-                        underline="none"
-                        color="inherit"
+                        underline='hover'
+                        color={isActive('/reactStore') ? 'primary' : 'inherit'}
                         onClick={() => navigate('/reactStore')}
                     >
                         Main
                     </Link>
                     <Link
-                        underline="none"
-                        color="inherit"
+                        underline='hover'
+                        color={isActive('/reactStore/basket') ? 'primary' : 'inherit'}
                         onClick={() => navigate('/reactStore/basket')}
                     >
                         Bakset
                     </Link>
                     <Link
-                        underline="none"
-                        color="inherit"
+                        underline='hover'
+                        color={isActive('/reactStore/favourite') ? 'primary' : 'inherit'}
                         onClick={() => navigate('/reactStore/favourite')}
                     >
                         Favourite
                     </Link>
                 </Breadcrumbs>
             </div>
-            <div>
-
+            <div
+            className="flex gap-4"
+            >
+                <FormControlLabel
+                    control={
+                        <Switch
+                            sx={{
+                                ".MuiSwitch-thumb": {
+                                    backgroundColor: "#93C572",
+                                },
+                                ".MuiSwitch-track": {
+                                    backgroundColor: "#93C572",
+                                },
+                                ".Mui-checked": {
+                                    ".MuiSwitch-thumb": {
+                                        backgroundColor: "#E3256b",
+                                    },
+                                    ".MuiSwitch-track": {
+                                        backgroundColor: "#E3256b",
+                                    },
+                                },
+                            }}
+                            checked={isPrimaryColorAlt}
+                            onChange={toggleColor}
+                        />
+                    }
+                    label=""
+                    labelPlacement="start"
+                />
                 <Button
                     id="basic-button"
                     aria-controls={open ? 'basic-menu' : undefined}

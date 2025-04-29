@@ -1,7 +1,7 @@
 // Common hooks
 import React, { useEffect } from 'react';
 // Components
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../components/Sortbar';
 import ProductCard from '../components/ProductCard';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';// Hooks
@@ -9,10 +9,15 @@ import { RootState, AppDispatch } from '../store/store';// Types from store
 import { fetchProducts, setSelectedCategory, setSearchQuery } from '../store/productsSlice';// Actions
 import { SelectChangeEvent } from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
-
+import GridViewIcon from '@mui/icons-material/GridView';
+import ViewListIcon from '@mui/icons-material/ViewList';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
 const MainPage = () => {
     // Get dispatch with type of AppDispatch
     const dispatch = useDispatch<AppDispatch>();
+    // Cards view
+    const [view, setView] = React.useState<string | null>('grid');
     // Get data from redux store
     const { data, loading, error, categories, selectedCategory, searchQuery } = useSelector(
         // Take only part of the state- 'products' (we dont need 'users' here)
@@ -44,25 +49,80 @@ const MainPage = () => {
     // Loading and errors renders
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Ошибка: {error}</div>;
+    // Cards view change function
+    const handleView = (
+        // @ts-ignore
+        event: React.MouseEvent<HTMLElement>,
+        newView: string | null,
+    ) => {
+        if (newView !== null) {
+            setView(newView);
+        }
+    };
+
     //Component render
     return (
-        <section className="bg-neutral-950 p-4 flex flex-col gap-4 md:px-24">
+        <section className="bg-neutral-950 p-4 flex flex-col gap-4 md:px-12">
             <Sidebar
                 categories={categories}
                 selectedCategory={selectedCategory}
                 handleCategoryChange={handleCategoryChange}
             />
-            <div className="flex flex-col items-center bg-neutral-900 rounded-xl p-2 gap-4">
-                <h1 className="text-4xl">Product List:</h1>
-                <TextField
-                    label="Search"
-                    size="small"
-                    type="text"
-                    placeholder="Enter product name"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                />
-                <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div
+                className="flex flex-col items-center bg-neutral-900 rounded-md p-2 gap-4 border-1 border-neutral-800"
+            >
+                <div
+                    className="flex justify-between w-full px-2 flex-col md:flex-row"
+                >
+                    <h1
+                        className="text-xl mt-2 text-neutral-200"
+                    >
+                        Here are some things you might like:
+                    </h1>
+                    <div
+                        className="flex items-center gap-2"
+                    >
+                        <span
+                            className="text-neutral-400"
+                        >
+                            View
+
+                        </span>
+                        <ToggleButtonGroup
+                            size="small"
+                            value={view}
+                            exclusive
+                            onChange={handleView}
+                            aria-label="cards view"
+                        >
+                            <ToggleButton
+                                value="grid"
+                                aria-label="grid"
+                                color="primary"
+                            >
+                                <GridViewIcon />
+                            </ToggleButton>
+                            <ToggleButton
+                                value="list"
+                                aria-label="list"
+                                color="primary"
+                            >
+                                <ViewListIcon />
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+
+                        <TextField
+                            className="w-80 bg-neutral-800"
+                            label="Search"
+                            size="small"
+                            type="text"
+                            placeholder="Enter product name"
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                        />
+                    </div>
+                </div>
+                <ul className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                     {filteredData.map(product => (
                         <ProductCard key={product.id} product={product} />
                     ))}

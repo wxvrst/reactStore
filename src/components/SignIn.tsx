@@ -3,6 +3,7 @@ import TextField from '@mui/material/TextField';
 import logo from '../assets/images/logo.svg';
 import Tooltip from '@mui/material/Tooltip';
 import { useState } from "react";
+import Button from "@mui/material/Button";
 interface SignInProps {
     isLogin: boolean;
     onFormSubmit: (email: string, password: string) => void;
@@ -57,13 +58,12 @@ function SignIn({ isLogin, onFormSubmit, onSwitchForm, onCloseModal }: SignInPro
                     size="small"
                     fullWidth
                 />
-                <button
-                    className="w-full rounded-md border-transparent border-1 transition-colors duration-250
-                     bg-blue-800 py-2 cursor-pointer hover:bg-blue-600"
-
+                <Button
+                className="w-full"
+                variant="outlined"
                 >
                     {isLogin ? 'Sign In' : 'Sign Up'}
-                </button>
+                </Button>
                 <div
                     className="flex w-full justify-between mt-1"
                 >

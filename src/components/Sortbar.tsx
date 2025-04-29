@@ -4,20 +4,20 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 
-interface SidebarProps {
+interface SortbarProps {
 	categories: string[];
 	selectedCategory: string;
 	handleCategoryChange: (event: SelectChangeEvent) => void;
 }
 
-function Sidebar({ categories, selectedCategory, handleCategoryChange }: SidebarProps) {
+function Sidebar({ categories, selectedCategory, handleCategoryChange }: SortbarProps) {
 	return (
-		<Box className="flex flex-col gap-4 bg-neutral-900 p-4 rounded-xl">
+		<Box className="flex flex-col gap-4 bg-neutral-900 p-4 rounded-md border-1 border-neutral-800 ">
 			<FormControl fullWidth size="small">
 				<InputLabel id="select-label">Categories</InputLabel>
 				<Select
 					labelId="select-label"
-					className="w-60 p-1"
+					className="w-60 bg-neutral-800"
 					value={selectedCategory}
 					label="All categories"
 					onChange={handleCategoryChange}

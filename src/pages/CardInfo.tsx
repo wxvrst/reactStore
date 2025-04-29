@@ -1,26 +1,31 @@
-// Common hooks
 import { useEffect, useState } from "react";
-// Router hooks
 import { useNavigate, useParams } from "react-router-dom";
-// Redux
-import { useSelector } from "react-redux";// Hook
-import { RootState } from "../store/store";// Type from store
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../store/store';
-import { addToBasket } from '../store/basketSlice';
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "../store/store";
+import { addToBasket } from "../store/basketSlice";
+import { toggleFavourite } from "../store/favouriteSlice";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
+import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 
 const CardInfo: React.FC = () => {
-    // Navigatore initializing 
-    const navigate = useNavigate();
-    // Get productID from url (/card-info/:productID)
-    const { productID } = useParams<{ productID: string }>();
-    // Get data from redux store
-    const { data, loading, error } = useSelector((state: RootState) => state.products);
-    // Variables- local states
     const [product, setProduct] = useState<typeof data[0] | null>(null);
     const [localError, setLocalError] = useState<string | null>(null);
-    // Searching for product by id
+    const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
+    const { productID } = useParams<{ productID: string }>();
+    const { data, loading, error } = useSelector((state: RootState) => state.products);
+    const basketItems = useSelector((state: RootState) => state.basket.items);
+    const favouriteItems = useSelector((state: RootState) => state.favourite.items);
+
+    const isInBasket = product ? basketItems.some(item => item.productId === product.id) : false;
+    const isInFavourite = product ? favouriteItems.includes(product.id) : false;
+
+    const handleSwitchFavourite = (id: number) => {
+        dispatch(toggleFavourite(id));
+    };
+
     useEffect(() => {
         if (productID) {
             const found = data.find(p => p.id === parseInt(productID, 10));
@@ -34,14 +39,12 @@ const CardInfo: React.FC = () => {
             setLocalError("Product ID not specified");
         }
     }, [data, loading, productID]);
-    // Loading and errors renders
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Ошибка: {error}</div>;
     if (localError) return <div>{localError}</div>;
     if (!product) return null;
-    // Add to basket
-    const dispatch = useDispatch<AppDispatch>();
-    // Component render
+
     return (
         <div className="flex sm:flex-row p-6 gap-4 flex-col bg-neutral-900 m-4 rounded-lg">
             <img className="h-64 w-56 rounded-xl" src={product.image} alt={product.title} />
@@ -64,15 +67,27 @@ const CardInfo: React.FC = () => {
                         Back
                     </Button>
                     <Button
+                        size="small"
                         variant="outlined"
-                        onClick={() => dispatch(addToBasket(product.id))}
+                        disabled={isInBasket}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            dispatch(addToBasket(product.id));
+                        }}
                     >
-                        Add to basket
+                        {isInBasket ? 'Already added' : 'Add to basket'}
                     </Button>
+                    <IconButton
+                        aria-label="favourite"
+                        color="primary"
+                        onClick={() => handleSwitchFavourite(product.id)}
+                    >
+                        {isInFavourite ? <FavoriteOutlinedIcon /> : <FavoriteBorderOutlinedIcon />}
+                    </IconButton>
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default CardInfo;
