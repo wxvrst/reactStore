@@ -1,7 +1,7 @@
 // Common hooks
 import React, { useEffect } from 'react';
 // Components
-import Sidebar from '../components/Sortbar';
+import Sortbar from '../components/Sortbar';
 import ProductCard from '../components/ProductCard';
 // Redux
 import { useSelector, useDispatch } from 'react-redux';// Hooks
@@ -13,7 +13,11 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
-const MainPage = () => {
+import secretImg from '../assets/images/secret.jpg';
+interface MainPageProps {
+    secretBgActive: boolean;
+}
+const MainPage: React.FC<MainPageProps> = ({ secretBgActive }) => {
     // Get dispatch with type of AppDispatch
     const dispatch = useDispatch<AppDispatch>();
     // Cards view
@@ -62,14 +66,28 @@ const MainPage = () => {
 
     //Component render
     return (
-        <section className="bg-neutral-950 p-4 flex flex-col gap-4 md:px-12">
-            <Sidebar
+        <section
+            className={
+                (secretBgActive
+                    ? `bg-url[${secretImg}]bg-cover bg-fixed`
+                    : "bg-neutral-950") +
+                " p-4 flex flex-col gap-4 md:px-12"
+            }
+            style={
+                secretBgActive
+                    ? { backgroundImage: `url(${secretImg})` }
+                    : undefined
+            }
+        >
+            <Sortbar
                 categories={categories}
                 selectedCategory={selectedCategory}
                 handleCategoryChange={handleCategoryChange}
             />
             <div
-                className="flex flex-col items-center bg-neutral-900 rounded-md p-2 gap-4 border-1 border-neutral-800"
+                className={
+                    "flex flex-col items-center bg-neutral-900/60 rounded-md p-2 gap-4 border-1 border-neutral-800"
+                }
             >
                 <div
                     className="flex justify-between w-full px-2 flex-col md:flex-row"

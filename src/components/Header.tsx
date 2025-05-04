@@ -7,22 +7,36 @@ import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Link from '@mui/material/Link';
 import Modal from '@mui/material/Modal';
 import SignIn from './SignIn';
-import Snackbar, { SnackbarCloseReason } from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import { AppDispatch, RootState } from '../store/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { useAuth } from '../contexts/AuthContext';
+import { type AuthUser } from '../types/User'
+import { registerUser } from '../store/usersSlice';
+import ToggleButton from '@mui/material/ToggleButton';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
+import StarIcon from '@mui/icons-material/Star';
 
 interface HeaderProps {
     toggleColor: () => void,
     isPrimaryColorAlt: boolean,
+    onSecret: () => void,
 }
 
-const Header: React.FC<HeaderProps> = ({ toggleColor, isPrimaryColorAlt }) => {
+const Header: React.FC<HeaderProps> = ({ toggleColor, isPrimaryColorAlt, onSecret }) => {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [openModal, setOpenModal] = React.useState(false);
     const [isLogin, setIsLogin] = React.useState<boolean>(true);
-    const [openAlert, setOpenAlert] = React.useState(false);
+    const [secret, setSecret] = React.useState<boolean>(false);
+    const [selected, setSelected] = React.useState(false);
     const open = Boolean(anchorEl);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+    const users = useSelector((state: RootState) => state.users.users)
+    const { user, login, logout } = useAuth();
+
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorEl(event.currentTarget);
@@ -30,38 +44,40 @@ const Header: React.FC<HeaderProps> = ({ toggleColor, isPrimaryColorAlt }) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const navigate = useNavigate();
 
     const handleOpenModal = () => setOpenModal(true);
-    const handleCloseModal = () => {
-        setOpenModal(false);
-        if (!isLogin) {
-            setOpenAlert(true);
-        }
-    };
+    const handleCloseModal = () => setOpenModal(false);
 
-    const handleSignInSubmit = (email: string, password: string) => {
-        console.log('Форма отправлена:', email, password);
+    const handleSignInSubmit = async (username: string, password: string) => {
         if (isLogin) {
-            // navigate('/profile');
-        } else {
-            // navigate('/success');
+            const foundUser = users.find(u => u.username === username && u.password === password);
+            if (foundUser) {
+                const authUser: AuthUser = { id: foundUser.id, username: foundUser.username, isVip:foundUser.isVip };
+                login(authUser);
+                if (authUser.isVip) {
+                    setSecret(true);
+                }
+                return { success: true, message: 'Succesful login' };
+            }
+            else {
+                return { success: false, message: 'Wrong username or password' }
+            }
+        }
+        else {
+            const userExists = users.some(u => u.username === username);
+            if (userExists) {
+                return { success: false, message: 'Username already exist' }
+            }
+            dispatch(registerUser({ username, password }));
+            return { success: true, message: 'Succesful registration, now log in' }
         }
     };
     const handleSwitchForm = () => {
         setIsLogin(!isLogin);
     };
-
-    const handleCloseAlert = (
-        // @ts-ignore
-        event: React.SyntheticEvent | Event,
-        reason?: SnackbarCloseReason,
-    ) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setOpenAlert(false);
-    };
+    const secretFunction=()=>{
+        onSecret();
+    }
     //Checking current path
     const isActive = (path: string): boolean => location.pathname === path;
     return (
@@ -95,8 +111,20 @@ const Header: React.FC<HeaderProps> = ({ toggleColor, isPrimaryColorAlt }) => {
                 </Breadcrumbs>
             </div>
             <div
-            className="flex gap-4"
+                className="flex gap-4"
             >
+                <ToggleButton
+                    value="check"
+                    size='small'
+                    selected={selected}
+                    onChange={() => {
+                        setSelected((prevSelected) => !prevSelected);
+                        secretFunction();
+                    }}
+                    hidden={secret ? false : true}
+                >
+                    {selected ? <StarBorderIcon /> : <StarIcon />}
+                </ToggleButton>
                 <FormControlLabel
                     control={
                         <Switch
@@ -139,21 +167,42 @@ const Header: React.FC<HeaderProps> = ({ toggleColor, isPrimaryColorAlt }) => {
                     onClose={handleClose}
                 >
                     <MenuItem
-                        onClick={() => navigate('/reactStore/my-profile')}
+                        onClick={() => {
+                            navigate('/reactStore/my-profile');
+                            handleClose();
+                        }}
                     >
                         My Profile
                     </MenuItem>
                     <MenuItem
-                        onClick={() => navigate('/reactStore/settings')}
+                        onClick={() => {
+                            navigate('/reactStore/settings');
+                            handleClose();
+                        }}
                     >
                         Settings
                     </MenuItem>
-                    <MenuItem
-                        onClick={handleOpenModal}
-                        className="p-4 place-content-center"
-                    >
-                        {isLogin ? 'Sign In' : 'Sign Out'}
-                    </MenuItem>
+                    {user ? (
+                        <MenuItem
+                            onClick={() => {
+                                logout();
+                                handleClose();
+                                setSecret(false);
+                            }}
+                        >
+                            Sign Out
+                        </MenuItem>
+                    ) : (
+                        <MenuItem
+                            onClick={() => {
+                                handleOpenModal();
+                                //TODO: Add handleClose and fix error
+                            }}
+                        >
+                            Sign In/Sign Up
+                        </MenuItem>
+                    )}
+
                     <Modal
                         open={openModal}
                         onClose={handleCloseModal}
@@ -167,22 +216,6 @@ const Header: React.FC<HeaderProps> = ({ toggleColor, isPrimaryColorAlt }) => {
                             onCloseModal={handleCloseModal}
                         />
                     </Modal>
-
-                    <Snackbar
-                        open={openAlert}
-                        autoHideDuration={1600}
-                        onClose={handleCloseAlert}
-                    >
-                        <Alert
-                            onClose={handleCloseAlert}
-                            severity="success"
-                            variant="filled"
-                            sx={{ width: '100%' }}
-                        >
-                            {isLogin ? 'Succes Login' : 'Succes Registration'}!
-                        </Alert>
-                    </Snackbar>
-
                 </Menu>
             </div>
         </header>

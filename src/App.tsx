@@ -4,7 +4,7 @@ import { CssBaseline, } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import AppRoutes from "./routes/routes";
 import './App.css'
-import React from "react";
+import React, { useState } from "react";
 
 //TODO: Change theme button, hover on header links and other links
 const App: React.FC = () => {
@@ -25,7 +25,7 @@ const App: React.FC = () => {
 		);
 	};
 	const isPrimaryColorAlt = primaryColor === '#E3256b';
-	
+
 	const activeTheme = createTheme({
 		cssVariables: true,
 		palette: {
@@ -36,6 +36,10 @@ const App: React.FC = () => {
 		},
 	});
 
+	//Secret function
+	const [secretBgActive, setSecretBgActive] = useState(false);
+	const toggleSecretBackground = () => setSecretBgActive((prev) => !prev);
+
 	return (
 		<ThemeProvider theme={activeTheme}>
 			<CssBaseline />
@@ -43,8 +47,9 @@ const App: React.FC = () => {
 				<Header
 					toggleColor={toggleColor}
 					isPrimaryColorAlt={isPrimaryColorAlt}
+					onSecret={toggleSecretBackground}
 				/>
-				<AppRoutes />
+				<AppRoutes secretBgActive={secretBgActive} />
 			</div>
 
 		</ThemeProvider>

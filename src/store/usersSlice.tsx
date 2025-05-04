@@ -1,47 +1,28 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { User, apiUrl } from '../types/User';
-
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {type User} from '../types/User'
 interface UsersState {
-	data: User[];
-	loading: boolean;
-	error: string | null;
+  users: User[];
+  nextId: number;
 }
-// Users initial state
+
 const initialState: UsersState = {
-	data: [],
-	loading: false,
-	error: null,
+  users: [
+    { id: 1, username: 'admin', password: 'admin123' },
+    { id: 2, username: 'pisun228', password: 'yazagitlera777', isVip:true}
+  ],
+  nextId: 3,
 };
-// Async users fetch
-export const fetchUsers = createAsyncThunk('users/fetch', async () => {
-	const response = await axios.get<User[]>(apiUrl);
-	return response.data;
-});
-// Create users slice
+
 const usersSlice = createSlice({
-	name: 'users',
-	initialState,
-	reducers: {},
-	// Async
-	extraReducers: builder => {
-		builder
-			// Loading has started
-			.addCase(fetchUsers.pending, state => {
-				state.loading = true;
-				state.error = null;
-			})
-			// Upload successful
-			.addCase(fetchUsers.fulfilled, (state, action) => {
-				state.loading = false;
-				state.data = action.payload;
-			})
-			// Loading error
-			.addCase(fetchUsers.rejected, (state, action) => {
-				state.loading = false;
-				state.error = action.error.message || 'Error';
-			});
-	},
+  name: 'users',
+  initialState,
+  reducers: {
+    registerUser(state, action: PayloadAction<Omit<User, 'id'>>) {
+      state.users.push({ id: state.nextId, ...action.payload });
+      state.nextId += 1;
+    },
+  },
 });
-// Reducer export
+
+export const { registerUser } = usersSlice.actions;
 export default usersSlice.reducer;

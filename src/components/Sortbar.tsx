@@ -12,7 +12,7 @@ interface SortbarProps {
 
 function Sidebar({ categories, selectedCategory, handleCategoryChange }: SortbarProps) {
 	return (
-		<Box className="flex flex-col gap-4 bg-neutral-900 p-4 rounded-md border-1 border-neutral-800 ">
+		<Box className="flex flex-col gap-4 bg-neutral-900/60 p-4 rounded-md border-1 border-neutral-800 ">
 			<FormControl fullWidth size="small">
 				<InputLabel id="select-label">Categories</InputLabel>
 				<Select

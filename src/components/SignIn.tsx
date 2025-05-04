@@ -4,22 +4,40 @@ import logo from '../assets/images/logo.svg';
 import Tooltip from '@mui/material/Tooltip';
 import { useState } from "react";
 import Button from "@mui/material/Button";
+import Link from "@mui/material/Link";
+import Alert from "@mui/material/Alert";
+
 interface SignInProps {
     isLogin: boolean;
-    onFormSubmit: (email: string, password: string) => void;
+    onFormSubmit: (username: string, password: string) => Promise<{ success: boolean; message: string }>;
     onSwitchForm: () => void;
     onCloseModal: () => void;
 }
+//@ts-ignore
 function SignIn({ isLogin, onFormSubmit, onSwitchForm, onCloseModal }: SignInProps) {
-    const [email, setEmail] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const handleFormSubmit = () => {
-        onFormSubmit(email, password);
-        onCloseModal();
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertSeverity, setAlertSeverity] = useState<'success' | 'error'>('success');
+    const [isSuccess, setIsSuccess] = useState<boolean>(false);
+
+    const handleFormSubmit = async () => {
+        if (!username || !password) {
+            setAlertMessage('Пожалуйста, заполните все поля');
+            setAlertSeverity('error');
+            return;
+        }
+        const result = await onFormSubmit(username, password);
+        setAlertMessage(result.message);
+        setAlertSeverity(result.success ? 'success' : 'error');
+        if (result.success) {
+            setIsSuccess(true);
+            setUsername('');
+            setPassword('');
+        }
     };
 
     return (
-
         <Box
             component="form"
             onSubmit={(e) => {
@@ -30,43 +48,55 @@ function SignIn({ isLogin, onFormSubmit, onSwitchForm, onCloseModal }: SignInPro
             autoComplete="off"
             className="absolute top-1/2 left-1/2 w-[60%] lg:w-1/4 bg-neutral-900 rounded-md p-4 shadow-xl transform -translate-x-1/2 -translate-y-1/2"
         >
-            <div
-                className="flex flex-col gap-6 justify-center items-center p-4"
-            >
+            <div className="flex flex-col gap-6 justify-center items-center p-4">
                 <img
                     src={logo}
                     alt="logo"
                     className="w-32"
                 />
+
+                {alertMessage && (
+                    <Alert
+                        severity={alertSeverity}
+                        variant="filled"
+                        sx={{ width: '100%' }}
+                        onClose={() => setAlertMessage('')}
+                    >
+                        {alertMessage}
+                    </Alert>
+                )}
+
                 <TextField
                     required
                     id="outlined-required"
-                    label="Username or E-mail"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    label={isSuccess ? 'Already logged in' : "Username"}
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     size="small"
                     fullWidth
+                    disabled={isSuccess}
                 />
                 <TextField
                     required
                     id="outlined-password-input"
-                    label="Password"
+                    label={isSuccess ? 'Already logged in' : "Password"}
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     autoComplete="current-password"
                     size="small"
                     fullWidth
+                    disabled={isSuccess}
                 />
                 <Button
-                className="w-full"
-                variant="outlined"
+                    className="w-full"
+                    variant="outlined"
+                    type="submit"
+                    disabled={isSuccess}
                 >
                     {isLogin ? 'Sign In' : 'Sign Up'}
                 </Button>
-                <div
-                    className="flex w-full justify-between mt-1"
-                >
+                <div className="flex w-full justify-between mt-1">
                     <Tooltip
                         placement="top"
                         title="Oh, that's a very, very pity"
@@ -83,22 +113,22 @@ function SignIn({ isLogin, onFormSubmit, onSwitchForm, onCloseModal }: SignInPro
                             },
                         }}
                     >
-                        <a
+                        <Link
+                            underline='hover'
                             className="cursor-pointer"
                         >
-                            Forgot Password?</a>
+                            Forgot Password?
+                        </Link>
                     </Tooltip>
-
-                    <a
+                    <Link
+                        underline='hover'
                         className="cursor-pointer"
                         onClick={onSwitchForm}
                     >
                         {isLogin ? 'Sign Up' : 'Sign In'}
-                    </a>
+                    </Link>
                 </div>
             </div>
-
-
         </Box>
     );
 }

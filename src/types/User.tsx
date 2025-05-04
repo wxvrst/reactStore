@@ -1,6 +1,10 @@
-export interface User {
+export interface AuthUser {
   id: number;
-  name: string;
-  email: string;
+  username: string;
+  isVip?:boolean,
 }
+export interface User extends AuthUser {
+  password: string;
+}
+
 export const apiUrl = "https://fakestoreapi.com/users";
