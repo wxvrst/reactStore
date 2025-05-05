@@ -69,7 +69,7 @@ const MainPage: React.FC<MainPageProps> = ({ secretBgActive }) => {
         <section
             className={
                 (secretBgActive
-                    ? `bg-url[${secretImg}]bg-cover bg-fixed`
+                    ? `bg-url[${secretImg}] bg-cover bg-fixed bg-center`
                     : "bg-neutral-950") +
                 " p-4 flex flex-col gap-4 md:px-12"
             }

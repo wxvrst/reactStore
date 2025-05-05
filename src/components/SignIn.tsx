@@ -46,7 +46,7 @@ function SignIn({ isLogin, onFormSubmit, onSwitchForm, onCloseModal }: SignInPro
             }}
             noValidate
             autoComplete="off"
-            className="absolute top-1/2 left-1/2 w-[60%] lg:w-1/4 bg-neutral-900 rounded-md p-4 shadow-xl transform -translate-x-1/2 -translate-y-1/2"
+            className="absolute top-1/2 left-1/2 w-[80%] lg:w-1/4 bg-neutral-900 rounded-md p-4 shadow-xl transform -translate-x-1/2 -translate-y-1/2"
         >
             <div className="flex flex-col gap-6 justify-center items-center p-4">
                 <img
